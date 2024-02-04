@@ -70,7 +70,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Upload, UploadPicker, getUploader } from '@nextcloud/upload'
-import { Folder as NcFolder } from '@nextcloud/files'
+import { Folder as NcFolder, davRootPath } from '@nextcloud/files'
 import { NcEmptyContent } from '@nextcloud/vue'
 import VirtualGrid from 'vue-virtual-grid'
 
@@ -78,13 +78,12 @@ import FileLegacy from '../components/FileLegacy.vue'
 import Folder from '../components/Folder.vue'
 import HeaderNavigation from '../components/HeaderNavigation.vue'
 
-import { prefixPath } from '../services/DavClient.js'
 import allowedMimes from '../services/AllowedMimes.js'
 import getAlbumContent from '../services/AlbumContent.js'
 
 import AbortControllerMixin from '../mixins/AbortControllerMixin.js'
 import GridConfigMixin from '../mixins/GridConfig.js'
-import getFileInfo from '../services/FileInfo.js'
+import { fetchFile } from '../services/fileFetcher'
 
 export default {
 	name: 'Folders',
@@ -283,8 +282,8 @@ export default {
 		 * @param {Upload} upload the newly uploaded files
 		 */
 		async onUpload(upload) {
-			const relPath = upload.source.split(prefixPath).pop()
-			const file = await getFileInfo(relPath)
+			const relPath = upload.source.split(davRootPath).pop()
+			const file = await fetchFile(relPath)
 			this.$store.dispatch('appendFiles', [file])
 			this.$store.dispatch('addFilesToFolder', { fileid: this.folderId, files: [file] })
 		},
