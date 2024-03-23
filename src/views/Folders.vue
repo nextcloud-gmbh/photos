@@ -84,6 +84,7 @@ import getAlbumContent from '../services/AlbumContent.js'
 import AbortControllerMixin from '../mixins/AbortControllerMixin.js'
 import GridConfigMixin from '../mixins/GridConfig.js'
 import { fetchFile } from '../services/fileFetcher'
+import logger from '../services/logger'
 
 export default {
 	name: 'Folders',
@@ -268,7 +269,7 @@ export default {
 					}
 				}
 				// cancelled request, moving on...
-				console.error('Error fetching album data', error)
+				logger.error('Error fetching album data', { error })
 			} finally {
 				// done loading even with errors
 				this.loading = false
